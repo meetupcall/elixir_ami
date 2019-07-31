@@ -1,3 +1,4 @@
+require IEx
 defmodule ElixirAmi.Connection do
   @moduledoc """
   Main module. Connects to Asterisk and allows you to send actions, and receive
@@ -30,7 +31,8 @@ defmodule ElixirAmi.Connection do
     connect_timeout: 5000,
     reconnect_timeout: 5000,
     ssl_options: nil,
-    debug: false
+    debug: false,
+    event_handler: nil
 
   alias ElixirAmi.Action, as: Action
   alias ElixirAmi.Message, as: Message
@@ -83,7 +85,9 @@ defmodule ElixirAmi.Connection do
   """
   @spec start_link(t) :: GenServer.on_start
   def start_link(info) do
-    GenServer.start_link __MODULE__, info, name: info.name
+    {:ok, pid} = GenServer.start_link __MODULE__, info, name: info.name
+    result = add_listener(info.name, fn(source, listener_id, event) ->  true end, info.event_handler) # Add the listener here so that it survives restarts by the supervisor
+    {:ok, pid}
   end
 
   @doc """
