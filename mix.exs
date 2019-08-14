@@ -25,9 +25,9 @@ defmodule ElixirAmi.Mixfile do
 
   defp description do
     """
-Elixir client for the Asterisk AMI protocol.
+    Elixir client for the Asterisk AMI protocol.
 
-Find the user guide in the github repo at: https://github.com/marcelog/elixir_ami.
+    Find the user guide in the github repo at: https://github.com/marcelog/elixir_ami.
     """
   end
 
