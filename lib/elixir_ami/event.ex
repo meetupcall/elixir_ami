@@ -31,7 +31,7 @@ defmodule ElixirAmi.Event do
   """
   @spec unserialize(atom, iolist) :: t
   def unserialize(source, data) do
-    Enum.reduce data, %ElixirAmi.Event{source: source}, fn({i, line}, event) ->
+    Enum.reduce data, %ElixirAmi.Event{source: source}, fn(line, event) ->
       [k, v] = for s <- (String.split line, ":", parts: 2), do: String.strip s
       k = String.downcase k
       case k do
