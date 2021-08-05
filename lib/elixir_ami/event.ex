@@ -1,3 +1,4 @@
+require Logger
 defmodule ElixirAmi.Event do
   @moduledoc """
   An AMI event is represented by this structure.
@@ -39,7 +40,8 @@ defmodule ElixirAmi.Event do
         "event" -> %{event | event: String.downcase(v)}
         "chanvariable" <> _channel ->
           [chan_var_k, chan_var_v] = String.split(v, "=", parts: 2)
-          %{event | variables: Map.put(event.variables, String.downcase(chan_var_k), chan_var_v)}
+          event = %{event | variables: Map.put(event.variables, String.downcase(chan_var_k), chan_var_v)}
+          %{event | keys: Map.put(event.keys, k, v)}
         k -> %{event | keys: Map.put(event.keys, k, v)}
       end
     end
