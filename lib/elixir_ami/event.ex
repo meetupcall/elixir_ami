@@ -32,18 +32,19 @@ defmodule ElixirAmi.Event do
   """
   @spec unserialize(atom, iolist) :: t
   def unserialize(source, data) do
-    Enum.reduce data, %ElixirAmi.Event{source: source}, fn(line, event) ->
+    result = Enum.reduce data, %ElixirAmi.Event{source: source}, fn(line, event) ->
       [k, v] = for s <- (String.split line, ":", parts: 2), do: String.strip s
       k = String.downcase k
-      case k do
+      x = case k do
         "actionid" -> %{event | action_id: v}
         "event" -> %{event | event: String.downcase(v)}
         "chanvariable" <> _channel ->
           [chan_var_k, chan_var_v] = String.split(v, "=", parts: 2)
-          event = %{event | variables: Map.put(event.variables, String.downcase(chan_var_k), chan_var_v)}
-          %{event | keys: Map.put(event.keys, k, v)}
+          %{event | variables: Map.put(event.variables, String.downcase(chan_var_k), chan_var_v), keys: Map.put(event.keys, k, v)}
         k -> %{event | keys: Map.put(event.keys, k, v)}
       end
     end
+    Logger.info("UNSER #{inspect(result)}")
+    result
   end
 end
